@@ -10,7 +10,7 @@ typedef struct Jogador{
     int altura;
     int peso;
     char universidade[100];
-    char anoNascimento;
+    int anoNascimento;
     char cidadeNascimento[100];
     char estadoNascimento[100];
 
@@ -26,8 +26,8 @@ void id(char id[]);
 void Nome(char nome[]);
 void Altura(char altura[]);
 void Peso(char peso[]);
-void AnoNascimento(char anoNascimento[]);
 void Universidade(char universidade[]);
+void AnoNascimento(char anoNascimento[]);
 void CidadeNascimento(char cidadeNascimento[]);
 void EstadoNascimento(char estadoNascimento[]);
 
@@ -85,7 +85,7 @@ void LerJogador(char entradaID[]){
     char entradas[1000];
     char *stringsep;
     char *virgula;
-    FILE *caminho = fopen("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv","r");
+    FILE *caminho = fopen("/tmp/players.csv","r");
     // C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv && /tmp/players.csv
 
     do{
@@ -114,13 +114,13 @@ void TratarString(char entrada[]){
     Altura(entrada);  
     //PESO
     strcpy(entrada, strtok(NULL, ","));
-    Peso(entrada);  
+    Peso(entrada);
+    //UNIVERSIDADE
+    strcpy(entrada, strtok(NULL, ","));
+    Universidade(entrada);   
     //ANO DE NASCIMENTO
     strcpy(entrada, strtok(NULL, ","));
     AnoNascimento(entrada);
-    //UNIVERSIDADE
-    strcpy(entrada, strtok(NULL, ","));
-    Universidade(entrada); 
     //CIDADE DE NASCIMENTO
     strcpy(entrada, strtok(NULL, ","));
     CidadeNascimento(entrada);
@@ -182,9 +182,9 @@ void Mostrar(){
         printf("%s"," ## ");
         printf("%d", lista[i].peso);
         printf("%s"," ## ");
-        printf("%s", lista[i].universidade);
-        printf("%s"," ## ");
         printf("%d", lista[i].anoNascimento);
+        printf("%s"," ## ");
+        printf("%s", lista[i].universidade);
         printf("%s"," ## ");
         printf("%s", lista[i].cidadeNascimento);
         printf("%s"," ## ");

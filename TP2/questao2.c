@@ -66,7 +66,7 @@ void Peso(char peso[]){
     lista[contadorjog].peso = atoi(peso);
 }
 void AnoNascimento(char anoNascimento[]){
-    strcpy(lista[contadorjog].anoNascimento,anoNascimento);
+    lista[contadorjog].anoNascimento = atoi(anoNascimento);
 }
 void Universidade(char universidade[]){
     strcpy(lista[contadorjog].universidade,universidade);
@@ -184,7 +184,7 @@ void Mostrar(){
         printf("%s"," ## ");
         printf("%s", lista[i].universidade);
         printf("%s"," ## ");
-        printf("%s", lista[i].anoNascimento);
+        printf("%d", lista[i].anoNascimento);
         printf("%s"," ## ");
         printf("%s", lista[i].cidadeNascimento);
         printf("%s"," ## ");

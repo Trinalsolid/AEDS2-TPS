@@ -10,7 +10,7 @@ typedef struct Jogador{
     int altura;
     int peso;
     char universidade[100];
-    char anoNascimento[100];
+    char anoNascimento;
     char cidadeNascimento[100];
     char estadoNascimento[100];
 

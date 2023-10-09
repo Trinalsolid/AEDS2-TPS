@@ -112,12 +112,9 @@ class Jogador{
 
         return clone;
     }
-
-    
-
 }
 
-public class questao5{
+public class questao13{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
     
@@ -179,25 +176,85 @@ public class questao5{
         }
     }
 
-    public static int Selecao(){
-        int contOpe = 0;
-        for(int i=0 ; i < (tamJog-1) ;i++){
-            int pos = i;
-            Jogador temp = jogad[i];
-            String menorjog = temp.getNome();
+    // Desempate por universidade
 
-            for(int j = (i+1) ; j < tamJog; j++){
-                if(jogad[pos].getNome().compareTo(jogad[j].getNome()) > 0){
-                    menorjog = jogad[j].getNome();
-                    pos = j;
-                    contOpe++;
+    public static void Desempate(){
+        Jogador tmp;
+
+        for(int i=0 ; i <tamJog ; i++ ){
+            for(int j=i+1 ; j <tamJog ; j++ ){
+                if(jogad[i].getUniversidade().compareTo(jogad[j].getUniversidade()) == 0){
+                    if(jogad[i].getNome().compareTo(jogad[j].getNome())>0){
+                        tmp = jogad[i];
+                        jogad[i] = jogad[j];
+                        jogad[j] = tmp;
+                    }
+                }else{
+                    j = tamJog;
                 }
             }
-            jogad[i] = jogad[pos];
-            jogad[pos] = temp;
         }
-        return contOpe;
     }
+
+    public static void sort() {
+        mergesort(0, tamJog-1);
+    }
+  
+    /**
+    * Algoritmo de ordenacao Mergesort.
+    * @param int esq inicio do array a ser ordenado
+    * @param int dir fim do array a ser ordenado
+    */
+    public static void mergesort(int esq, int dir) {
+        if (jogad != null && esq < dir && dir >= 0 && esq < jogad.length && jogad.length != 0){
+           int meio = (esq + dir) / 2;
+           mergesort(esq, meio);
+           mergesort(meio + 1, dir);
+           intercalar(esq, meio, dir);
+        }
+    }
+  
+    /**
+    * Algoritmo que intercala os elementos entre as posicoes esq e dir
+    * @param int esq inicio do array a ser ordenado
+    * @param int meio posicao do meio do array a ser ordenado
+    * @param int dir fim do array a ser ordenado
+    */ 
+    public static void intercalar(int esq, int meio, int dir){
+        Jogador[] tmp = new Jogador[jogad.length];
+
+        for(int i = esq ; i<= dir ; i++){
+            tmp[i] = jogad[i];
+        }
+        
+        int n1 = esq;
+        int n2 = meio+1;
+        int n3 = esq;
+
+        while(n1 <= meio && n2 <= dir){
+            if(tmp[n1].getUniversidade().compareTo(tmp[n2].getUniversidade()) <= 0){
+                jogad[n3] = tmp[n1];
+                n1++;
+            }else{
+                jogad[n3] = tmp[n2];
+                n2++;
+            }
+            n3++;
+        }
+
+        while(n1 <= meio){
+            jogad[n3] = tmp[n1];
+            n1++;
+            n3++;
+        }
+
+        while (n2 <= dir) {
+            jogad[n3] = jogad[n2];
+            n2++;
+            n3++;
+        }
+    }
+
 
     public static void main(String[] args) throws Exception {
 
@@ -215,13 +272,14 @@ public class questao5{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
-        int operacoes = Selecao();
+        sort(); 
+        Desempate();
         mostrar();
 
-        //arquivo de Matricula sequencial 
+        //arquivo de Matricula mergesort
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_sequencial.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + operacoes);
+        Arq.openWrite("matrícula_mergesort.txt");
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" );
         Arq.close();
     }
 }

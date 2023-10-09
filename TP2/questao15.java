@@ -112,12 +112,9 @@ class Jogador{
 
         return clone;
     }
-
-    
-
 }
 
-public class questao5{
+public class questao15{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
     
@@ -215,13 +212,12 @@ public class questao5{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
-        int operacoes = Selecao();
         mostrar();
 
-        //arquivo de Matricula sequencial 
+        //arquivo de Matricula mergesort
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_sequencial.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + operacoes);
+        Arq.openWrite("matrícula_mergesort.txt");
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" );
         Arq.close();
     }
 }

@@ -112,19 +112,16 @@ class Jogador{
 
         return clone;
     }
-
-    
-
 }
 
-public class questao5{
+public class questao9{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
     
     //LER
     public static String ler(String entradaid) throws Exception {
         String entrada = "";
-        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("/tmp/players.csv")));
+        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv")));
 
         entrada = arq.readLine();
         while(entrada != null){
@@ -179,25 +176,12 @@ public class questao5{
         }
     }
 
-    public static int Selecao(){
-        int contOpe = 0;
-        for(int i=0 ; i < (tamJog-1) ;i++){
-            int pos = i;
-            Jogador temp = jogad[i];
-            String menorjog = temp.getNome();
-
-            for(int j = (i+1) ; j < tamJog; j++){
-                if(jogad[pos].getNome().compareTo(jogad[j].getNome()) > 0){
-                    menorjog = jogad[j].getNome();
-                    pos = j;
-                    contOpe++;
-                }
-            }
-            jogad[i] = jogad[pos];
-            jogad[pos] = temp;
-        }
-        return contOpe;
+    public static void swap(int i, int j) {
+        Jogador temp = jogad[i];
+        jogad[i] = jogad[j];
+        jogad[j] = temp;
     }
+
 
     public static void main(String[] args) throws Exception {
 
@@ -215,13 +199,12 @@ public class questao5{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
-        int operacoes = Selecao();
         mostrar();
 
         //arquivo de Matricula sequencial 
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_sequencial.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + operacoes);
+        Arq.openWrite("matrícula_heapsort.txt");
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t");
         Arq.close();
     }
 }

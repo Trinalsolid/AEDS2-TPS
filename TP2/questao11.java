@@ -112,12 +112,9 @@ class Jogador{
 
         return clone;
     }
-
-    
-
 }
 
-public class questao5{
+public class questao11{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
     
@@ -179,24 +176,60 @@ public class questao5{
         }
     }
 
-    public static int Selecao(){
-        int contOpe = 0;
-        for(int i=0 ; i < (tamJog-1) ;i++){
-            int pos = i;
-            Jogador temp = jogad[i];
-            String menorjog = temp.getNome();
+    // Desempate por nome
 
-            for(int j = (i+1) ; j < tamJog; j++){
-                if(jogad[pos].getNome().compareTo(jogad[j].getNome()) > 0){
-                    menorjog = jogad[j].getNome();
-                    pos = j;
-                    contOpe++;
+    public static void Desempate(int n){
+        Jogador tmp;
+
+        for(int i=0 ; i <n ; i++ ){
+            for(int j=i+1 ; j <n ; j++ ){
+                if(jogad[i].getAltura() == jogad[j].getAltura()){
+                    if(jogad[i].getNome().compareTo(jogad[j].getNome())>0){
+                        tmp = jogad[i];
+                        jogad[i] = jogad[j];
+                        jogad[j] = tmp;
+                    }
+                }else{
+                    j = n;
                 }
             }
-            jogad[i] = jogad[pos];
-            jogad[pos] = temp;
         }
-        return contOpe;
+    }
+
+    public static void CountSort() {
+        //Array para contar o numero de ocorrencias de cada elemento
+        int[] count = new int[getMaior(jogad,tamJog) + 1];
+        Jogador[] ordenado = new Jogador[tamJog];
+  
+        //Inicializar cada posicao do array de contagem 
+        for (int i = 0; i < count.length; count[i] = 0, i++);
+  
+        //Agora, o count[i] contem o numero de elemento iguais a i
+        for (int i = 0; i < tamJog; count[jogad[i].getAltura()]++, i++);
+  
+        //Agora, o count[i] contem o numero de elemento menores ou iguais a i
+        for(int i = 1; i < count.length; count[i] += count[i-1], i++);
+  
+        //Ordenando
+        for(int i = tamJog-1; i >= 0; ordenado[count[jogad[i].getAltura()]-1] = jogad[i], count[jogad[i].getAltura()]--, i--);
+  
+        //Copiando para o array original
+        for(int i = 0; i < tamJog; jogad[i] = ordenado[i], i++);
+    }
+  
+    /**
+    * Retorna o maior elemento do array.
+    * @return maior elemento
+    */
+    public static int getMaior(Jogador temp[] , int n) {
+        int maior = temp[0].getAltura();
+        String nome = temp[0].getNome();
+        for (int i = 0; i < n; i++) {
+            if(maior < temp[i].getAltura()){
+                maior = temp[i].getAltura();
+            }
+        }
+        return maior;	
     }
 
     public static void main(String[] args) throws Exception {
@@ -215,13 +248,14 @@ public class questao5{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
-        int operacoes = Selecao();
+        CountSort();
+        Desempate(tamJog);
         mostrar();
 
-        //arquivo de Matricula sequencial 
+        //arquivo de Matricula countingsort
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_sequencial.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + operacoes);
+        Arq.openWrite("matrícula_countingsort.txt");
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" );
         Arq.close();
     }
 }

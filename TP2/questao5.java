@@ -220,7 +220,7 @@ public class questao5{
 
         //arquivo de Matricula sequencial 
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_sequencial.txt");
+        Arq.openWrite("matrícula_selecao.txt");
         Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + operacoes);
         Arq.close();
     }

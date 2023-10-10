@@ -22,9 +22,8 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
-void insercaoPorCor(int n, int cor, int h);
-void shellsort(int n);
-void sort();
+void bolha(int n);
+void swap(int i, int j);
 void Mostrar();
 //-----------------------
 void id(char id[]);
@@ -40,7 +39,7 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
-int contador = 0;
+int comp = 0;
 
 int main(){
     clock_t t; 
@@ -54,16 +53,15 @@ int main(){
         contadorjog++;
         scanf("%s",Ids);
     }
-    shellsort(contadorjog);
-    sort();
+    bolha(contadorjog);
     Mostrar();
 
     // arquivo de matricula========================================================
     t = clock() - t; 
-    
+
     FILE *arq;
-    arq = fopen("matrícula_shellsort.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t , contador);
+    arq = fopen("matrícula_quicksort.txt", "a");
+    fprintf(arq, "695161 \t %ld \t %d ", t , comp);
     fclose(arq);
     //=============================================================================
     return 0;
@@ -96,56 +94,27 @@ void EstadoNascimento(char estadoNascimento[]){
     strcpy(lista[contadorjog].estadoNascimento,estadoNascimento);
 }
 
-// Shell sort 
-
+// Bubblesort
 //=============================================================================
-void insercaoPorCor(int n, int cor, int h){
-    for (int i = (h + cor); i < n; i+=h) {
-        Jogador tmp = lista[i];
-        int j = i - h;
-        while ((j >= 0) && ((lista[j].peso > tmp.peso || (lista[j].peso == tmp.peso && strcmp(lista[j].nome, tmp.nome)>0 )))) {
-            lista[j + h] = lista[j];
-            j-=h;
-            contador++;
-        }
-        lista[j + h] = tmp;
-    }
-}
-
-void shellsort(int n) {
-    Jogador tmp; 
-   
-    for(int i=0; i<n; i++){
-        for(int j=i+1; j<n; j++){
-            if(lista[i].altura == lista[j].altura){
-                if( strcmp(lista[i].nome,lista[j].nome)>0){
-                   tmp=lista[i];
-                   lista[i]=lista[j];
-                   lista[j]=tmp;
-                }
-            }else{
-                j=n;     
+void bolha(int n){
+    int i, j;
+    for (i = (n - 1); i > 0; i--){
+        for (j = 0; j < i; j++){
+            if (strcmp(lista[j].anoNascimento, lista[j + 1].anoNascimento) > 0 || (strcmp(lista[j].anoNascimento, lista[j + 1].anoNascimento) == 0 && strcmp(lista[j].nome, lista[j + 1].nome) > 0)){
+                swap(j, j + 1);
             }
         }
     }
 }
 
-void sort(){
-    int h = 1;
-   
-    do{
-        h = (h * 3) + 1;
-    }while (h < contadorjog);
-
-    do{
-        h /= 3;
-        for (int cor = 0; cor < h; cor++){
-            insercaoPorCor(contadorjog, cor, h);
-            contador++;
-        }
-    } while (h != 1);
+void swap(int i, int j){
+   Jogador tmp = lista[i];
+   lista[i] = lista[j];
+   lista[j] = tmp;
 }
+
 //=============================================================================
+
 // LEITURA
 
 void LerJogador(char entradaID[]){
@@ -153,7 +122,7 @@ void LerJogador(char entradaID[]){
     char entradas[1000];
     char *stringsep;
     char *virgula;
-    FILE *caminho = fopen("/tmp/players.csv","r");
+    FILE *caminho = fopen("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv","r");
     // C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv && /tmp/players.csv
 
     do{

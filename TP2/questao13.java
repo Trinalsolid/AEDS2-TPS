@@ -279,7 +279,7 @@ public class questao13{
         //arquivo de Matricula mergesort
         long tempoFinal = System.currentTimeMillis();
         Arq.openWrite("matrícula_mergesort.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" );
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t");
         Arq.close();
     }
 }

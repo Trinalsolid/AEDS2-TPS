@@ -39,6 +39,7 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
+int contador =0;
 
 int main(){
     clock_t t; 
@@ -57,11 +58,10 @@ int main(){
     Mostrar();
 
     // arquivo de matricula========================================================
-    t = clock() - t; 
-    double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds  
+    t = clock() - t;  
     FILE *arq;
     arq = fopen("matrícula_selecaoRecursiva.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t);
+    fprintf(arq, "695161 \t %ld \t %d", t , contador);
     fclose(arq);
     //=============================================================================
 
@@ -101,13 +101,15 @@ void SelecaoRec(int i, int n){
 	int menor = i;
 	for (int j = i + 1; j < n; j++){
 		if (strcmp(lista[j].nome,lista[menor].nome) < 0 ){
-			menor = j;	
+			menor = j;
+            contador++;	
         }
 	}
 	swap(menor, i);
 
 	if (i + 1 < n) {
 		SelecaoRec(i + 1, n);
+        contador++;
 	}
 }
 

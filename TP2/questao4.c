@@ -39,6 +39,7 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
+int contador = 0;
 
 int main(){
     clock_t t; 
@@ -69,10 +70,9 @@ int main(){
 
     // arquivo de matricula---------------
     t = clock() - t; 
-    double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds  
     FILE *arq;
     arq = fopen("matrícula_sequencial.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t);
+    fprintf(arq, "695161 \t %ld \t %d ", t , contador);
     fclose(arq);
     //------------------------------------
 
@@ -112,6 +112,7 @@ void ordenacao(){
     for (int i = 0; i < contadorjog; i++){
         for (int j = 0; j < contadorjog; j++){
             if (strcmp(lista[i].nome, lista[j].nome) < 0){
+                contador++;
                 // Fazemos a troca do maior jogador para a direita enquanto o menor vai pra esquerda
                 Jogador aux = lista[i];
                 lista[i] = lista[j];
@@ -128,6 +129,7 @@ bool PesquisaBinaria(char entrada[]){
 
     if (strcmp(entrada, "Sarunas Marciulionis") == 0){
         resp = true;
+        contador++;
     }
 
     int dir = (contadorjog - 1), esq = 0, meio;
@@ -137,9 +139,11 @@ bool PesquisaBinaria(char entrada[]){
         if(strcmp(entrada, lista[meio].nome) == 0){
             resp = true;
             esq = dir + 1;
+            contador++;
         }
         else if(strcmp(entrada, lista[meio].nome) > 0){
             esq = meio + 1;
+            contador++;
         }
         else{
             dir = meio - 1;

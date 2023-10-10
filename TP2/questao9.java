@@ -121,7 +121,7 @@ public class questao9{
     //LER
     public static String ler(String entradaid) throws Exception {
         String entrada = "";
-        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv")));
+        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("/tmp/players.csv")));
 
         entrada = arq.readLine();
         while(entrada != null){
@@ -176,6 +176,54 @@ public class questao9{
         }
     }
 
+    // HEAPSORT
+
+    public static void Heap(int n, int i){
+        int maior = i;
+        int esq = 2 * i + 1;
+        int dir = 2 * i + 2;
+    
+        // verifica se nao eh maior que a raiz
+        if (esq < n){ 
+            if( jogad[esq].getAltura() > jogad[maior].getAltura()  ){ 
+                maior = esq;
+            }
+            if(jogad[dir].getAltura() == jogad[maior].getAltura()&& jogad[dir].getNome().compareTo(jogad[maior].getNome()) > 0){
+                maior = esq;
+            }
+        }
+        // verifica se o filho da direita é o maior 
+        if (dir < n) {
+            if (jogad[dir].getAltura() > jogad[maior].getAltura()) {
+                maior = dir;
+            }
+            if (jogad[dir].getAltura() == jogad[maior].getAltura()&& jogad[dir].getNome().compareTo(jogad[maior].getNome()) > 0) {
+                maior = dir;           
+            }
+        }
+        
+        // verifica se nao eh raiz
+        if (maior != i) {
+            swap(i, maior);
+            // chama o heap 
+            Heap(n, maior);
+        }
+    }
+
+    
+    public static void sort() {
+        // constroi o heap
+        for (int i = tamJog / 2 - 1; i >= 0; i--){
+            Heap(tamJog, i);
+        }
+        // Retira elesmetos 1 por 1 no array
+        for (int i = tamJog - 1; i >= 0; i--){
+          swap(0, i);
+          // chama o heap da sub-arvore
+          Heap(i, 0);
+        }
+    }
+
     public static void swap(int i, int j) {
         Jogador temp = jogad[i];
         jogad[i] = jogad[j];
@@ -199,6 +247,8 @@ public class questao9{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
+        sort();
+        sort();
         mostrar();
 
         //arquivo de Matricula sequencial 

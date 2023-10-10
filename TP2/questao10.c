@@ -22,9 +22,10 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
-void insercaoPorCor(int n, int cor, int h);
-void shellsort(int n);
+void quicksortRec(int esq, int dir);
 void sort();
+void Quick();
+void swap(int i, int j);
 void Mostrar();
 //-----------------------
 void id(char id[]);
@@ -40,7 +41,7 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
-int contador = 0;
+int comp = 0;
 
 int main(){
     clock_t t; 
@@ -54,16 +55,16 @@ int main(){
         contadorjog++;
         scanf("%s",Ids);
     }
-    shellsort(contadorjog);
     sort();
+    Quick();
     Mostrar();
 
     // arquivo de matricula========================================================
     t = clock() - t; 
-    
+
     FILE *arq;
-    arq = fopen("matrícula_shellsort.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t , contador);
+    arq = fopen("matrícula_quicksort.txt", "a");
+    fprintf(arq, "695161 \t %ld \t %d ", t , comp);
     fclose(arq);
     //=============================================================================
     return 0;
@@ -96,56 +97,66 @@ void EstadoNascimento(char estadoNascimento[]){
     strcpy(lista[contadorjog].estadoNascimento,estadoNascimento);
 }
 
-// Shell sort 
+// Quicksort
 
 //=============================================================================
-void insercaoPorCor(int n, int cor, int h){
-    for (int i = (h + cor); i < n; i+=h) {
-        Jogador tmp = lista[i];
-        int j = i - h;
-        while ((j >= 0) && ((lista[j].peso > tmp.peso || (lista[j].peso == tmp.peso && strcmp(lista[j].nome, tmp.nome)>0 )))) {
-            lista[j + h] = lista[j];
-            j-=h;
-            contador++;
+void quicksortRec(int esq, int dir){
+    int i = esq, j = dir;
+    Jogador pivo = lista[(dir + esq) / 2];
+    while (i <= j){
+        while (strcmp(lista[i].estadoNascimento, pivo.estadoNascimento) < 0){
+            i++;
         }
-        lista[j + h] = tmp;
+        while (strcmp(lista[j].estadoNascimento, pivo.estadoNascimento) > 0){
+            j--;
+        }
+        if (i <= j){
+            swap(i , j);
+            i++;
+            j--;
+        }
     }
+    if (esq < j){
+        comp++; 
+        quicksortRec(esq, j);
+    }
+    if (i < dir){
+        comp++;
+        quicksortRec(i, dir);
+    } 
 }
 
-void shellsort(int n) {
-    Jogador tmp; 
-   
-    for(int i=0; i<n; i++){
-        for(int j=i+1; j<n; j++){
-            if(lista[i].altura == lista[j].altura){
-                if( strcmp(lista[i].nome,lista[j].nome)>0){
-                   tmp=lista[i];
-                   lista[i]=lista[j];
-                   lista[j]=tmp;
+void sort(){
+   quicksortRec(0, contadorjog - 1);
+}
+
+void Quick(){
+    Jogador temp;
+    for (int i = 0; i < contadorjog; i++){
+        if (strcmp(lista[i].estadoNascimento, lista[i + 1].estadoNascimento) == 0){
+            for (int j = i + 1; j < contadorjog; j++){
+                if (strcmp(lista[i].estadoNascimento, lista[j].estadoNascimento) == 0){
+                    if (strcmp(lista[i].nome, lista[j].nome) > 0){
+                        temp = lista[i];
+                        lista[i] = lista[j];
+                        lista[j] = temp;
+                    }
+                }else{
+                    j = contadorjog;
                 }
-            }else{
-                j=n;     
             }
         }
     }
 }
 
-void sort(){
-    int h = 1;
-   
-    do{
-        h = (h * 3) + 1;
-    }while (h < contadorjog);
-
-    do{
-        h /= 3;
-        for (int cor = 0; cor < h; cor++){
-            insercaoPorCor(contadorjog, cor, h);
-            contador++;
-        }
-    } while (h != 1);
+void swap(int i, int j){
+   Jogador tmp = lista[i];
+   lista[i] = lista[j];
+   lista[j] = tmp;
 }
+
 //=============================================================================
+
 // LEITURA
 
 void LerJogador(char entradaID[]){

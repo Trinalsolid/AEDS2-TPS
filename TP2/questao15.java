@@ -121,7 +121,7 @@ public class questao15{
     //LER
     public static String ler(String entradaid) throws Exception {
         String entrada = "";
-        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("/tmp/players.csv")));
+        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\\\Users\\\\WazX\\\\Desktop\\\\aeds2-master\\\\tps\\\\entrada e saida\\\\players.csv")));
 
         entrada = arq.readLine();
         while(entrada != null){
@@ -169,33 +169,54 @@ public class questao15{
     //MOSTRAR
 
     public static void mostrar(){
-        for(int i =0 ; i < tamJog ; i++){
+        for(int i =0 ; i < 10 ; i++){
             System.out.println("["+jogad[i].getId()+" ## "+jogad[i].getNome()+" ## "+jogad[i].getAltura()+" ## "+jogad[i].getPeso()
             +" ## "+ jogad[i].getAnoNascimento()+" ## "+ jogad[i].getUniversidade()+" ## "+jogad[i].getCidadeNascimento()+
             " ## " +jogad[i].getEstadoNascimento()+"]");
         }
     }
 
-    public static int Selecao(){
-        int contOpe = 0;
-        for(int i=0 ; i < (tamJog-1) ;i++){
-            int pos = i;
-            Jogador temp = jogad[i];
-            String menorjog = temp.getNome();
+    public static void desempate(int n) { 
+        Jogador tmp ;
 
-            for(int j = (i+1) ; j < tamJog; j++){
-                if(jogad[pos].getNome().compareTo(jogad[j].getNome()) > 0){
-                    menorjog = jogad[j].getNome();
-                    pos = j;
-                    contOpe++;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (jogad[i].getAltura() == jogad[j].getAltura()) {
+                    if (jogad[i].getNome().compareTo(jogad[j].getNome()) > 0) {
+                        tmp = jogad[i];
+                        jogad[i] = jogad[j];
+                        jogad[j] = tmp;
+                    }
+                } else {
+                    j = n;
                 }
             }
-            jogad[i] = jogad[pos];
-            jogad[pos] = temp;
         }
-        return contOpe;
     }
-
+    
+    public static void sort(){ 
+        int k = 10;
+        
+        for (int i = 0; i < k; i++) {
+            int menor = i;
+            for (int j = (i + 1); j < tamJog; j++) {
+                if (jogad[menor].getNome().compareTo(jogad[j].getNome()) > 0 ) {
+                    menor = j;
+                }
+            }
+            if (i < k) {
+                swap( menor, i);
+            }else{
+                i = tamJog;
+            }
+        }
+    }
+    
+    public static void swap(int i, int j) {
+        Jogador temp = jogad[i];
+        jogad[i] = jogad[j];
+        jogad[j] = temp;
+    }
     public static void main(String[] args) throws Exception {
 
         //tempo inicial do código
@@ -212,6 +233,8 @@ public class questao15{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
+        sort();
+        desempate(tamJog);
         mostrar();
 
         //arquivo de Matricula mergesort

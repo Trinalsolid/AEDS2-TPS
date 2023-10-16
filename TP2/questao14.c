@@ -22,9 +22,9 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
-void insercaoPorCor(int n, int cor, int h);
-void shellsort(int n);
-void sort();
+void radixsort(Jogador *array, int n);
+int getMax(Jogador *array, int n);
+void radcountingSort(Jogador *array, int n, int exp);
 void Mostrar();
 //-----------------------
 void id(char id[]);
@@ -40,33 +40,29 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
-int contador = 0;
+int comp = 0;
 
 int main(){
     clock_t t; 
     t = clock();
     
     char Ids[1000];
-    //char erro[15] = {"223"};
     scanf("%s",Ids);
 
-    while(strcmp(Ids,"FIM") != 0 ){
-        //if(strcmp(Ids , "222")){
-        //    LerJogador(erro);
-        //}             
+    while(strcmp(Ids,"FIM") != 0 ){             
         LerJogador(Ids);
         contadorjog++;
         scanf("%s",Ids);
     }
-    shellsort(contadorjog);
+    radixsort(lista,contadorjog);
     Mostrar();
 
     // arquivo de matricula========================================================
     t = clock() - t; 
-    
+
     FILE *arq;
-    arq = fopen("matrícula_shellsort.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t , contador);
+    arq = fopen("matrícula_radixsort.txt", "a");
+    fprintf(arq, "695161 \t %ld \t %d ", t , comp);
     fclose(arq);
     //=============================================================================
     return 0;
@@ -99,48 +95,64 @@ void EstadoNascimento(char estadoNascimento[]){
     strcpy(lista[contadorjog].estadoNascimento,estadoNascimento);
 }
 
-// Shell sort 
-
+// Radixsort
 //=============================================================================
-bool Desempate(Jogador a1 , Jogador a2){
-    if(a1.peso != a2.peso){
-        return a1.peso > a2.peso;
-        contador++;
-    }else{
-        return strcmp(a1.nome , a2.nome) > 0;
-        contador++;
+
+int getMax(Jogador *array, int n) {
+    int maior = array[0].id;
+
+    for (int i = 1; i < n; i++) {
+        if(maior < array[i].id){
+            maior = array[i].id;
+            comp++;
+        }
+    }
+    return maior;
+}
+
+void radixsort(Jogador *array, int n) {
+    //Array para contar o numero de ocorrencias de cada elemento
+    int max = getMax(array, n);
+    for (int exp = 1; max/exp > 0; exp *= 10) {
+        radcountingSort(array, n, exp);
+        comp++;
     }
 }
 
-void insercaoPorCor(int n, int cor, int h){
-    for (int i = (h + cor); i < n; i+=h) {
-        Jogador tmp = lista[i];
-        int j = i - h;
-        while ((j >= 0) && Desempate(lista[j],tmp)) {
-            lista[j + h] = lista[j];
-            j-=h;
-            contador++;
-        }
-        lista[j + h] = tmp;
+void radcountingSort(Jogador *array, int n, int exp) {
+    int count[10];
+    Jogador output[n];
+
+    //Inicializar cada posicao do array de contagem 
+    for (int i = 0; i < 10; count[i] = 0, i++);
+
+    //Agora, o count[i] contem o numero de elemento iguais a i
+    for (int i = 0; i < n; i++) {
+        count[(array[i].id/exp) % 10]++;
+    }
+
+    //Agora, o count[i] contem o numero de elemento menores ou iguais a i
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i-1];
+        comp++;
+    }
+
+    //Ordenando
+    for (int i = n-1; i >= 0; i--) {
+        output[count[(array[i].id/exp) % 10] - 1] = array[i];
+        count[(array[i].id/exp) % 10]--;
+        comp++;
+    }
+
+    //Copiando para o array original
+    for (int i = 0; i < n; i++) {
+        array[i] = output[i];
+        comp++;
     }
 }
 
-void shellsort(int n) {
-    int h = 1;
-
-    do{ 
-        h = (h * 3) + 1; 
-    } while (h < n);
-
-    do{
-        h /= 3;
-        for(int cor = 0; cor < h; cor++){
-            insercaoPorCor(n, cor, h);
-        }
-    } while (h >= 1);
-}
-
 //=============================================================================
+
 // LEITURA
 
 void LerJogador(char entradaID[]){
@@ -148,7 +160,7 @@ void LerJogador(char entradaID[]){
     char entradas[1000];
     char *stringsep;
     char *virgula;
-    FILE *caminho = fopen("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv","r");
+    FILE *caminho = fopen("/tmp/players.csv","r");
     // C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv && /tmp/players.csv
 
     do{
@@ -236,7 +248,7 @@ char* replace(char s[]){
 
 void Mostrar(){
 
-    for (int i = 1; i < contadorjog; i++){
+    for (int i = 0; i < contadorjog; i++){
         printf("[%d", lista[i].id);
         printf("%s"," ## ");
         printf("%s", lista[i].nome);

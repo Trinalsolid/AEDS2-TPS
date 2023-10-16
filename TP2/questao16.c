@@ -22,9 +22,7 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
-void insercaoPorCor(int n, int cor, int h);
-void shellsort(int n);
-void sort();
+void InsercaoParcial(Jogador *array, int n);
 void Mostrar();
 //-----------------------
 void id(char id[]);
@@ -40,35 +38,20 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
-int contador = 0;
+int comp = 0;
 
 int main(){
-    clock_t t; 
-    t = clock();
     
     char Ids[1000];
-    //char erro[15] = {"223"};
     scanf("%s",Ids);
 
-    while(strcmp(Ids,"FIM") != 0 ){
-        //if(strcmp(Ids , "222")){
-        //    LerJogador(erro);
-        //}             
+    while(strcmp(Ids,"FIM") != 0 ){             
         LerJogador(Ids);
         contadorjog++;
         scanf("%s",Ids);
     }
-    shellsort(contadorjog);
+    InsercaoParcial(lista,contadorjog);
     Mostrar();
-
-    // arquivo de matricula========================================================
-    t = clock() - t; 
-    
-    FILE *arq;
-    arq = fopen("matrícula_shellsort.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t , contador);
-    fclose(arq);
-    //=============================================================================
     return 0;
 }
 
@@ -99,48 +82,32 @@ void EstadoNascimento(char estadoNascimento[]){
     strcpy(lista[contadorjog].estadoNascimento,estadoNascimento);
 }
 
-// Shell sort 
-
+// Insercao parcial
 //=============================================================================
+
 bool Desempate(Jogador a1 , Jogador a2){
-    if(a1.peso != a2.peso){
-        return a1.peso > a2.peso;
-        contador++;
+    if(a1.anoNascimento != a2.anoNascimento){
+        return a1.anoNascimento > a2.anoNascimento;
     }else{
         return strcmp(a1.nome , a2.nome) > 0;
-        contador++;
     }
 }
 
-void insercaoPorCor(int n, int cor, int h){
-    for (int i = (h + cor); i < n; i+=h) {
-        Jogador tmp = lista[i];
-        int j = i - h;
-        while ((j >= 0) && Desempate(lista[j],tmp)) {
-            lista[j + h] = lista[j];
-            j-=h;
-            contador++;
+void InsercaoParcial(Jogador *array, int n){
+    int k = 10;
+    for (int i = 1; i < n; i++) {
+        Jogador tmp = array[i];
+        int j= (i < k) ? i-1 : k-1;
+        while ((j >= 0) && Desempate(array[j] ,tmp)){
+            array[j+1] = array[j];
+            j--;
         }
-        lista[j + h] = tmp;
+        array[j+1] = tmp;
     }
-}
-
-void shellsort(int n) {
-    int h = 1;
-
-    do{ 
-        h = (h * 3) + 1; 
-    } while (h < n);
-
-    do{
-        h /= 3;
-        for(int cor = 0; cor < h; cor++){
-            insercaoPorCor(n, cor, h);
-        }
-    } while (h >= 1);
 }
 
 //=============================================================================
+
 // LEITURA
 
 void LerJogador(char entradaID[]){
@@ -148,7 +115,7 @@ void LerJogador(char entradaID[]){
     char entradas[1000];
     char *stringsep;
     char *virgula;
-    FILE *caminho = fopen("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv","r");
+    FILE *caminho = fopen("/tmp/players.csv","r");
     // C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv && /tmp/players.csv
 
     do{
@@ -236,7 +203,7 @@ char* replace(char s[]){
 
 void Mostrar(){
 
-    for (int i = 1; i < contadorjog; i++){
+    for (int i = 0; i < 10; i++){
         printf("[%d", lista[i].id);
         printf("%s"," ## ");
         printf("%s", lista[i].nome);

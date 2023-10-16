@@ -114,10 +114,9 @@ class Jogador{
     }
 }
 
-public class questao15{
+public class questao18{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
-    public static int contador = 0;
     
     //LER
     public static String ler(String entradaid) throws Exception {
@@ -177,54 +176,45 @@ public class questao15{
         }
     }
 
-    public static void desempate(int n) { 
-        Jogador tmp ;
+    /**
+    * Algoritmo de ordenacao Quicksort parcial .
+    * @param int esq inicio do array a ser ordenado
+    * @param int dir fim do array a ser ordenado
+    * @param int k quantidade a ser ordenada
+    */
+    public static void quicksortParcial(int esq, int dir , int k){
+        int i = esq, j = dir;
+        Jogador pivo = jogad[(dir+esq)/2];
+        while (i <= j){
+            while(jogad[i].getEstadoNascimento().compareTo(pivo.getEstadoNascimento()) < 0 || jogad[i].getEstadoNascimento().compareTo(pivo.getEstadoNascimento()) == 0
+                && jogad[i].getNome().compareTo(pivo.getNome()) < 0){
+                i++; 
+            }
+            while(jogad[j].getEstadoNascimento().compareTo(pivo.getEstadoNascimento()) > 0 || jogad[j].getEstadoNascimento().compareTo(pivo.getEstadoNascimento()) == 0
+                && jogad[j].getNome().compareTo(pivo.getNome()) > 0){
+                j--;
+            }
+            if (i <= j) {
+                swap(i, j);
+                i++;
+                j--;
+            }            
+        }
+        if (esq < j){
+            quicksortParcial(esq, j , k);
+        }  
+        if (i < k && i < dir){
+            quicksortParcial(i, dir , k);
+        }
+    }
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (jogad[i].getAltura() == jogad[j].getAltura()) {
-                    if (jogad[i].getNome().compareTo(jogad[j].getNome()) > 0) {
-                        tmp = jogad[i];
-                        jogad[i] = jogad[j];
-                        jogad[j] = tmp;
-                    }
-                } else {
-                    j = n;
-                }
-            }
-        }
-    }
-    
-    public static void sort(){ 
-        int k = 10;
-        
-        for (int i = 0; i < k; i++) {
-            int menor = i;
-            for (int j = (i + 1); j < tamJog; j++) {
-                if (jogad[menor].getNome().compareTo(jogad[j].getNome()) > 0 ) {
-                    menor = j;
-                    contador++;
-                }
-            }
-            if (i < k) {
-                contador++;
-                swap( menor, i);
-            }else{
-                i = tamJog;
-            }
-        }
-    }
-    
     public static void swap(int i, int j) {
         Jogador temp = jogad[i];
         jogad[i] = jogad[j];
         jogad[j] = temp;
     }
-    public static void main(String[] args) throws Exception {
 
-        //tempo inicial do código
-        long tempoInicial = System.currentTimeMillis();
-        //----------------------------------------------//
+    public static void main(String[] args) throws Exception {
         
         String IdsJogadores = "";
         BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
@@ -236,14 +226,7 @@ public class questao15{
             tamJog += 1;
             IdsJogadores = entrada.readLine();
         }
-        sort();
-        desempate(tamJog);
-        mostrar();
-
-        //arquivo de Matricula mergesort
-        long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_mergesort.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" );
-        Arq.close();
+        quicksortParcial(0, tamJog-1 , 10);
+        mostrar();      
     }
 }

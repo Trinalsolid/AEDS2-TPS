@@ -22,9 +22,11 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
-void insercaoPorCor(int n, int cor, int h);
-void shellsort(int n);
-void sort();
+void construir(Jogador *array, int tamHeap);
+int getMaiorFilho(Jogador *array, int i, int tamHeap);
+void reconstruir(Jogador *array, int tamHeap);
+void heapsortParcial(Jogador *array, int n);
+void swap(int i, int j);
 void Mostrar();
 //-----------------------
 void id(char id[]);
@@ -40,35 +42,20 @@ void EstadoNascimento(char estadoNascimento[]);
 
 Jogador lista[1000];
 int contadorjog = 0;
-int contador = 0;
+int comp = 0;
 
 int main(){
-    clock_t t; 
-    t = clock();
     
     char Ids[1000];
-    //char erro[15] = {"223"};
     scanf("%s",Ids);
 
-    while(strcmp(Ids,"FIM") != 0 ){
-        //if(strcmp(Ids , "222")){
-        //    LerJogador(erro);
-        //}             
+    while(strcmp(Ids,"FIM") != 0 ){             
         LerJogador(Ids);
         contadorjog++;
         scanf("%s",Ids);
     }
-    shellsort(contadorjog);
+    heapsortParcial(lista,contadorjog);
     Mostrar();
-
-    // arquivo de matricula========================================================
-    t = clock() - t; 
-    
-    FILE *arq;
-    arq = fopen("matrícula_shellsort.txt", "a");
-    fprintf(arq, "695161 \t %ld \t %d", t , contador);
-    fclose(arq);
-    //=============================================================================
     return 0;
 }
 
@@ -99,48 +86,79 @@ void EstadoNascimento(char estadoNascimento[]){
     strcpy(lista[contadorjog].estadoNascimento,estadoNascimento);
 }
 
-// Shell sort 
-
+// Heapsort parcial
 //=============================================================================
-bool Desempate(Jogador a1 , Jogador a2){
-    if(a1.peso != a2.peso){
-        return a1.peso > a2.peso;
-        contador++;
-    }else{
-        return strcmp(a1.nome , a2.nome) > 0;
-        contador++;
+
+void construir(Jogador *array, int tamHeap){
+    for(int i = tamHeap; i > 1 && array[i].altura > array[i/2].altura; i /= 2){
+        swap(array + i, array + i/2);
     }
 }
 
-void insercaoPorCor(int n, int cor, int h){
-    for (int i = (h + cor); i < n; i+=h) {
-        Jogador tmp = lista[i];
-        int j = i - h;
-        while ((j >= 0) && Desempate(lista[j],tmp)) {
-            lista[j + h] = lista[j];
-            j-=h;
-            contador++;
+int getMaiorFilho(Jogador *array, int i, int tamHeap){
+    int filho;
+    if (2*i == tamHeap || array[2*i].altura > array[2*i+1].altura){
+        filho = 2*i;
+    } else {
+        filho = 2*i + 1;
+    }
+    return filho;
+}
+
+void reconstruir(Jogador *array, int tamHeap){
+    int i = 1;
+    while(i <= (tamHeap/2)){
+        int filho = getMaiorFilho(array, i, tamHeap);
+        if(array[i].altura < array[filho].altura){
+            swap(array + i, array + filho);
+            i = filho;
+        }else{
+            i = tamHeap;
         }
-        lista[j + h] = tmp;
     }
 }
 
-void shellsort(int n) {
-    int h = 1;
+void heapsortParcial(Jogador *array, int n) {
+    int k = 10;
+    //Alterar o vetor ignorando a posicao zero
+    Jogador arrayTmp[n+1];
+    for(int i = 0; i < n; i++){
+        arrayTmp[i+1].altura = array[i].altura;
+    }
 
-    do{ 
-        h = (h * 3) + 1; 
-    } while (h < n);
+    //Contrucao do heap
+    for(int tamHeap = 2; tamHeap <= n; tamHeap++){
+        construir(arrayTmp, tamHeap);
+    }
 
-    do{
-        h /= 3;
-        for(int cor = 0; cor < h; cor++){
-            insercaoPorCor(n, cor, h);
+    for (int i = k + 1; i <= n; i++){
+        if (array[i].altura < array[1].altura){
+            swap(i , 1); 
+            reconstruir(array , k);
         }
-    } while (h >= 1);
+    }
+
+    //Ordenacao propriamente dita
+    int tamHeap = k;
+    while(tamHeap > 1){
+        swap(arrayTmp + 1, arrayTmp + tamHeap--);
+        reconstruir(arrayTmp, tamHeap);
+    }
+
+    //Alterar o vetor para voltar a posicao zero
+    for(int i = 0; i < n; i++){
+        array[i] = arrayTmp[i+1];
+    }
+}
+
+void swap(int i, int j){
+   Jogador tmp = lista[i];
+   lista[i] = lista[j];
+   lista[j] = tmp;
 }
 
 //=============================================================================
+
 // LEITURA
 
 void LerJogador(char entradaID[]){
@@ -236,7 +254,7 @@ char* replace(char s[]){
 
 void Mostrar(){
 
-    for (int i = 1; i < contadorjog; i++){
+    for (int i = 0; i < 10; i++){
         printf("[%d", lista[i].id);
         printf("%s"," ## ");
         printf("%s", lista[i].nome);

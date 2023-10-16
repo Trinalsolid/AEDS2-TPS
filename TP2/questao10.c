@@ -131,15 +131,12 @@ void sort(){
 }
 
 void Quick(){
-    Jogador temp;
     for (int i = 0; i < contadorjog; i++){
         if (strcmp(lista[i].estadoNascimento, lista[i + 1].estadoNascimento) == 0){
             for (int j = i + 1; j < contadorjog; j++){
                 if (strcmp(lista[i].estadoNascimento, lista[j].estadoNascimento) == 0){
                     if (strcmp(lista[i].nome, lista[j].nome) > 0){
-                        temp = lista[i];
-                        lista[i] = lista[j];
-                        lista[j] = temp;
+                        swap(i, j);
                     }
                 }else{
                     j = contadorjog;

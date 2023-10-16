@@ -22,6 +22,7 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
+bool Desempate(Jogador a1 , Jogador a2);
 void bolha(int n);
 void swap(int i, int j);
 void Mostrar();
@@ -60,7 +61,7 @@ int main(){
     t = clock() - t; 
 
     FILE *arq;
-    arq = fopen("matrícula_quicksort.txt", "a");
+    arq = fopen("matrícula_bubblesort.txt", "a");
     fprintf(arq, "695161 \t %ld \t %d ", t , comp);
     fclose(arq);
     //=============================================================================
@@ -96,12 +97,22 @@ void EstadoNascimento(char estadoNascimento[]){
 
 // Bubblesort
 //=============================================================================
+
+bool Desempate(Jogador a1 , Jogador a2){
+    if(a1.anoNascimento != a2.anoNascimento){
+        return a1.anoNascimento > a2.anoNascimento;
+    }else{
+        return strcmp(a1.nome , a2.nome) > 0;
+    }
+}
+
 void bolha(int n){
     int i, j;
-    for (i = (n - 1); i > 0; i--){
-        for (j = 0; j < i; j++){
-            if (strcmp(lista[j].anoNascimento, lista[j + 1].anoNascimento) > 0 || (strcmp(lista[j].anoNascimento, lista[j + 1].anoNascimento) == 0 && strcmp(lista[j].nome, lista[j + 1].nome) > 0)){
-                swap(j, j + 1);
+    for (i = 0 ; i < n-1; i++){
+        for (j = 0 ; j < n-1 ; j++){
+            if(Desempate(lista[j],lista[j+1])){ 
+                comp++;
+                swap(j, j+1);
             }
         }
     }
@@ -122,7 +133,7 @@ void LerJogador(char entradaID[]){
     char entradas[1000];
     char *stringsep;
     char *virgula;
-    FILE *caminho = fopen("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv","r");
+    FILE *caminho = fopen("/tmp/players.csv","r");
     // C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv && /tmp/players.csv
 
     do{

@@ -117,6 +117,7 @@ class Jogador{
 public class questao13{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
+    public static int contador = 0;
     
     //LER
     public static String ler(String entradaid) throws Exception {
@@ -207,10 +208,11 @@ public class questao13{
     */
     public static void mergesort(int esq, int dir) {
         if (jogad != null && esq < dir && dir >= 0 && esq < jogad.length && jogad.length != 0){
-           int meio = (esq + dir) / 2;
-           mergesort(esq, meio);
-           mergesort(meio + 1, dir);
-           intercalar(esq, meio, dir);
+            contador++;
+            int meio = (esq + dir) / 2;
+            mergesort(esq, meio);
+            mergesort(meio + 1, dir);
+            intercalar(esq, meio, dir);
         }
     }
   
@@ -279,7 +281,7 @@ public class questao13{
         //arquivo de Matricula mergesort
         long tempoFinal = System.currentTimeMillis();
         Arq.openWrite("matrícula_mergesort.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t");
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + contador);
         Arq.close();
     }
 }

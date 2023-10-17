@@ -22,10 +22,9 @@ typedef struct Jogador{
 void LerJogador(char entradaID[]);
 char* replace(char * s);
 void TratarString(char entrada[]);
-void construir(Jogador *array, int tamHeap);
-int getMaiorFilho(Jogador *array, int i, int tamHeap);
-void reconstruir(Jogador *array, int tamHeap);
-void heapsortParcial(Jogador *array, int n);
+void DesempateHeapsort();
+void Heap(int n, int i);
+void HeapsortParcial();
 void swap(int i, int j);
 void Mostrar();
 //-----------------------
@@ -54,7 +53,8 @@ int main(){
         contadorjog++;
         scanf("%s",Ids);
     }
-    heapsortParcial(lista,contadorjog);
+    HeapsortParcial();
+    DesempateHeapsort();
     Mostrar();
     return 0;
 }
@@ -87,67 +87,67 @@ void EstadoNascimento(char estadoNascimento[]){
 }
 
 // Heapsort parcial
+
 //=============================================================================
 
-void construir(Jogador *array, int tamHeap){
-    for(int i = tamHeap; i > 1 && array[i].altura > array[i/2].altura; i /= 2){
-        swap(array + i, array + i/2);
+void DesempateHeapsort(){
+    for (int i = 0; i < contadorjog; i++){
+        if (lista[i].altura == lista[i + 1].altura){
+            for (int j = i + 1; j < contadorjog; j++){
+                if (lista[i].altura == lista[j].altura){
+                    if (strcmp(lista[i].nome, lista[j].nome) > 0){
+                        swap(i , j);
+                    }
+                }else{                    
+                    j = contadorjog;
+                }    
+            }
+        }    
     }
 }
 
-int getMaiorFilho(Jogador *array, int i, int tamHeap){
-    int filho;
-    if (2*i == tamHeap || array[2*i].altura > array[2*i+1].altura){
-        filho = 2*i;
-    } else {
-        filho = 2*i + 1;
-    }
-    return filho;
-}
-
-void reconstruir(Jogador *array, int tamHeap){
-    int i = 1;
-    while(i <= (tamHeap/2)){
-        int filho = getMaiorFilho(array, i, tamHeap);
-        if(array[i].altura < array[filho].altura){
-            swap(array + i, array + filho);
-            i = filho;
-        }else{
-            i = tamHeap;
+void Heap(int n, int i){
+    int maior = i;
+    int esq = 2 * i + 1;
+    int dir = 2 * i + 2;
+    
+    // verifica se nao eh maior que a raiz
+    if (esq < n){ 
+        if(lista[esq].altura > lista[maior].altura){ 
+            maior = esq;
+        }
+        if(lista[dir].altura == lista[maior].altura && strcmp(lista[dir].nome, lista[maior].nome) > 0){
+            maior = esq;
         }
     }
-}
-
-void heapsortParcial(Jogador *array, int n) {
-    int k = 10;
-    //Alterar o vetor ignorando a posicao zero
-    Jogador arrayTmp[n+1];
-    for(int i = 0; i < n; i++){
-        arrayTmp[i+1].altura = array[i].altura;
-    }
-
-    //Contrucao do heap
-    for(int tamHeap = 2; tamHeap <= n; tamHeap++){
-        construir(arrayTmp, tamHeap);
-    }
-
-    for (int i = k + 1; i <= n; i++){
-        if (array[i].altura < array[1].altura){
-            swap(i , 1); 
-            reconstruir(array , k);
+    // verifica se o filho da direita é o maior 
+    if (dir < n) {
+        if (lista[dir].altura > lista[maior].altura) {
+            maior = dir;
+        }
+        if(lista[dir].altura == lista[maior].altura && strcmp(lista[dir].nome, lista[maior].nome) > 0) {
+            maior = dir;           
         }
     }
-
-    //Ordenacao propriamente dita
-    int tamHeap = k;
-    while(tamHeap > 1){
-        swap(arrayTmp + 1, arrayTmp + tamHeap--);
-        reconstruir(arrayTmp, tamHeap);
+        
+    // verifica se nao eh raiz
+    if (maior != i) {
+        swap(i, maior);
+        // chama o heap 
+        Heap(n, maior);
     }
+}
 
-    //Alterar o vetor para voltar a posicao zero
-    for(int i = 0; i < n; i++){
-        array[i] = arrayTmp[i+1];
+void HeapsortParcial(){
+    // constroi o heap
+    for (int i = contadorjog / 2 - 1; i >= 0; i--){
+        Heap(i, contadorjog);
+    }
+    // Retira elementos 1 por 1 no array
+    for (int i = contadorjog - 1; i >= 0; i--){
+        swap(0, i);
+        // chama o heap da sub-arvore
+        Heap(i, 0);
     }
 }
 
@@ -166,7 +166,7 @@ void LerJogador(char entradaID[]){
     char entradas[1000];
     char *stringsep;
     char *virgula;
-    FILE *caminho = fopen("C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv","r");
+    FILE *caminho = fopen("/tmp/players.csv","r");
     // C:\\Users\\WazX\\Desktop\\aeds2-master\\tps\\entrada e saida\\players.csv && /tmp/players.csv
 
     do{

@@ -47,13 +47,13 @@ int main(){
     t = clock();
     
     char Ids[1000];
-    //char erro[15] = {"223"};
+    char erro[15] = {"222"};
     scanf("%s",Ids);
 
     while(strcmp(Ids,"FIM") != 0 ){
-        //if(strcmp(Ids , "222")){
-        //    LerJogador(erro);
-        //}             
+        if(strcmp(Ids , "223") == 0){
+            LerJogador(erro);
+        }             
         LerJogador(Ids);
         contadorjog++;
         scanf("%s",Ids);
@@ -236,7 +236,7 @@ char* replace(char s[]){
 
 void Mostrar(){
 
-    for (int i = 1; i < contadorjog; i++){
+    for (int i = 0; i < contadorjog; i++){
         printf("[%d", lista[i].id);
         printf("%s"," ## ");
         printf("%s", lista[i].nome);

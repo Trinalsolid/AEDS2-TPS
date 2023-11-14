@@ -118,7 +118,7 @@ class Matriz{
     public Matriz MultiplicacaoMatriz(Matriz a , Matriz b){
         Matriz resp = null;
 
-        if(linha == coluna) {
+        if(a.linha == b.coluna) {
             resp = new Matriz(a.linha, b.coluna);
 
             // linhas de cada matriz
@@ -145,7 +145,7 @@ class Matriz{
                     }
                     Jresp = Jresp.dir;
                     Jm1 = tmp1; 
-                    Jm2 = tmp2;
+                    Jm2 = tmp2.dir;
                 }
                 Iresp = Iresp.inf;
                 Im1 = Im1.inf;
@@ -170,7 +170,6 @@ public class questao9{
         int quantidade = MyIO.readInt();
 
         for(int i = 0 ; i < quantidade ; i++){
-
             int linhas, colunas;
             linhas = MyIO.readInt();
             colunas = MyIO.readInt();
@@ -178,9 +177,9 @@ public class questao9{
             Matriz matriz1 = new Matriz(linhas, colunas);
             matriz1.Inserir();
             matriz1.DiagonaPrincipal();
-            System.out.println(" diagonal ");
+            System.out.println("");
             matriz1.DiagonalSecundaria();
-            System.out.println("diagonal ");
+            System.out.println("");
             // Matriz 2
             int lin , col;
             lin = MyIO.readInt();

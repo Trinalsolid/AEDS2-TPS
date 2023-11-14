@@ -293,8 +293,10 @@ class Lista {
 	 * Mostra os elementos da lista separados por espacos.
 	 */
 	public void mostrar() {
-		for (Celula i = primeiro.prox; i != null; i = i.prox) {
-			System.out.print("["+ i +"]");
+        int cont =0;
+		for (Celula i = primeiro.prox; i != null; i = i.prox , cont++) {
+			System.out.print("["+ cont +"]");
+            i.elemento.mostrar();
 		}	
 	}
 

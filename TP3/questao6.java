@@ -117,7 +117,7 @@ class Jogador{
     //MOSTRAR
 
     public void mostrar(){
-        System.out.println("##"+getId()+" ## "+ getNome()+" ## "+ getAltura()+" ## "+ getPeso()
+        System.out.println(" ## "+ getNome()+" ## "+ getAltura()+" ## "+ getPeso()
             +" ## "+ getAnoNascimento()+" ## "+ getUniversidade()+" ## "+getCidadeNascimento()+
             " ## " +getEstadoNascimento()+" ## ");
     }
@@ -216,7 +216,7 @@ public class questao6{
     //LER
     public static String ler(String entradaid) throws Exception {
         String entrada = "";
-        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\\\Users\\\\WazX\\\\Desktop\\\\aeds2-master\\\\tps\\\\entrada e saida\\\\players.csv")));
+        BufferedReader arq = new BufferedReader(new InputStreamReader(new FileInputStream("/tmp/players.csv")));
         entrada = arq.readLine();
         while(entrada != null){
             String[] Ids = entrada.split(",");

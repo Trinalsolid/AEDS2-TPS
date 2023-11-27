@@ -122,104 +122,66 @@ class Jogador{
     }
 }
 
-class No {
-    public Jogador elemento; // Conteudo do no.
-    public No esq, dir;  // Filhos da esq e dir.
+class HashComRehash {
+	Jogador tabela[];
+	int m;
+	final int NULO = -1;
 
-    /**
-     * Construtor da classe.
-     * @param elemento Conteudo do no.
-     */
-    public No(Jogador elemento) {
-        this(elemento, null, null);
-    }
-
-    /**
-     * Construtor da classe.
-     * @param elemento Conteudo do no.
-     * @param esq No da esquerda.
-     * @param dir No da direita.
-     */
-    public No(Jogador elemento, No esq, No dir) {
-        this.elemento = elemento;
-        this.esq = esq;
-        this.dir = dir;
-    }
-}
-
-class TreeSort {
-	private No raiz; 
-    private int n;
-
-	public TreeSort() {
-		raiz = null;
-        n = 0;
+	public HashComRehash() {
+		this(25);
 	}
 
-	public Jogador[] sort() {
-        Jogador[] array = new Jogador[n];
-        n = 0;
-        sort(raiz, array);
-        return array;
-	}
-
-	private void sort(No i, Jogador[] array) {
-		if (i != null) {
-			sort(i.esq, array);
-			array[n++] = i.elemento;
-			sort (i.dir, array);
+	public HashComRehash(int m) {
+		this.m = m;
+		this.tabela = new Jogador[this.m];
+		for (int i = 0; i < m; i++) {
+			tabela[i] = null;
 		}
 	}
 
-	public void inserir(Jogador x) {
-        questao5.contador++;
-        n++;
-		raiz = inserir(x, raiz);
+	public int h(int elemento) {
+		return elemento % m;
 	}
 
-	private No inserir(Jogador x, No i) {
-		if (i == null) {
-            questao5.contador++;
-            i = new No(x);
-        } else if (x.getNome().compareTo(i.elemento.getNome()) < 0) {
-            questao5.contador++;
-            i.esq = inserir(x, i.esq);
-        } else if (x.getNome().compareTo(i.elemento.getNome()) > 0) {
-            questao5.contador++;
-            i.dir = inserir(x, i.dir);
-        }
-
-		return i;
+	public int reh(int elemento) {
+		return ++elemento % m;
 	}
 
-    public boolean pesquisar(String x) {
-		return pesquisar(x, raiz);
+	public boolean inserir(Jogador elemento) {
+		boolean resp = false;
+		if (elemento != null) {
+			int pos = h(elemento.getAltura());
+			if (tabela[pos] == null) {
+				tabela[pos] = elemento;
+				resp = true;
+			} else {
+				pos = reh(elemento.getAltura());
+				if (tabela[pos] == null) {
+				tabela[pos] = elemento;
+				resp = true;
+				}
+			}
+		}
+		return resp;
 	}
 
-	/**
-	 * Metodo privado recursivo para pesquisar elemento.
-	 * @param x Elemento que sera procurado.
-	 * @param i No em analise.
-	 * @return <code>true</code> se o elemento existir,
-	 * <code>false</code> em caso contrario.
-	 */
-	private boolean pesquisar(String x, No i) {
-        boolean resp;
-        if (i == null) {
-            resp = false;
-        }else if (x.compareTo(i.elemento.getNome()) == 0) {
-            resp = true;
-        }else if ( x.compareTo(i.elemento.getNome()) < 0 ) {
-            resp = pesquisar(x, i.esq);
-        }else {
-            resp = pesquisar(x, i.dir);
-        }
-        return resp;
+	public boolean pesquisar(String elemento) {
+		boolean resp = false;
+		for(int i = 0; i < m ; i++){
+			if(tabela[i] != null && tabela[i].getNome().compareTo(elemento) == 0){
+				resp = true;
+				break;
+			}else{
+				resp = false;
+			}
+		}
+
+		return resp;
 	}
 }
 
-public class questao5{
-    public static Jogador[] jogad = new Jogador[1000];
+public class questao8{
+    public static Jogador jogad = new Jogador();
     public static int tamJog = 0;
     public static int contador = 0;
     
@@ -248,26 +210,27 @@ public class questao5{
         entrada = entrada.replaceAll(",,", ",nao informado,");
         String[] jogadores = entrada.split(",");
 
+        
         // ID do jogador
         int id = Integer.parseInt(jogadores[0]);
-        jogad[tamJog].setId(id);
+        jogad.setId(id);
         // Nome do jogador
-        jogad[tamJog].setNome(jogadores[1]);
+        jogad.setNome(jogadores[1]);
         // Altura do jogador
         int altura = Integer.parseInt(jogadores[2]);
-        jogad[tamJog].setAltura(altura);
+        jogad.setAltura(altura);
         // Peso do jogador
         int peso = Integer.parseInt(jogadores[3]);
-        jogad[tamJog].setPeso(peso);
+        jogad.setPeso(peso);
         // Universidade do jogador
-        jogad[tamJog].setUniversidade(jogadores[4]);
+        jogad.setUniversidade(jogadores[4]);
         // Ano de nascimento do jogador
         int anoNascimento = Integer.parseInt(jogadores[5]);
-        jogad[tamJog].setAnoNascimento(anoNascimento);
+        jogad.setAnoNascimento(anoNascimento);
         // Cidade do  jogador
-        jogad[tamJog].setCidadeNascimento(jogadores[6]);
+        jogad.setCidadeNascimento(jogadores[6]);
         // Estado do jogador
-        jogad[tamJog].setEstadoNascimento(jogadores[7]);
+        jogad.setEstadoNascimento(jogadores[7]);
     }
 
     public static void main(String[] args) throws Exception {
@@ -277,29 +240,38 @@ public class questao5{
         //----------------------------------------------//
         
         // PRIMEIRA PARTE DA LEITURA
-        TreeSort tree = new TreeSort();
+        HashComRehash tabelaRehash = new HashComRehash();
         String IdsJogadores = "";
         BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
         IdsJogadores = entrada.readLine();
 
         while(IdsJogadores.equals("FIM") != true){
-            jogad[tamJog] = new Jogador();
+            jogad = new Jogador();
             TratarString(ler(IdsJogadores));
-            tamJog ++;
+            tabelaRehash.inserir(jogad);
+            
             IdsJogadores = entrada.readLine();
         }
-        for(int i =0 ; i < tamJog ; i++){
-            tree.inserir(jogad[i]);
-        }
-        Jogador[] array = tree.sort();
-        for(int j = 0; j < array.length; j++){
-            System.out.println(array[j].getNome());
+        
+        // SEGUNDA PARTE DA LEITURA
+        String NomeJogadores = "";
+        boolean saida = false;
+        NomeJogadores = entrada.readLine();
+
+        while(NomeJogadores.equals("FIM") != true){
+            saida = tabelaRehash.pesquisar(NomeJogadores);
+            if(saida == false){
+                System.out.println(NomeJogadores + " NAO");
+            }else{
+                System.out.println(NomeJogadores + " SIM"); 
+            }
+            NomeJogadores = entrada.readLine();
         }
 
         //arquivo de Matricula sequencial 
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_treesort.txt");
-        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + contador);
+        Arq.openWrite("matrícula_hashRehash.txt");
+        Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t");
         Arq.close();
     } 
 }

@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
+
 class Jogador{
 
     public static Jogador[] jogad = new Jogador[1000];
@@ -122,103 +123,158 @@ class Jogador{
     }
 }
 
+//########################################################################################################################################
+
 class No {
-    public Jogador elemento; // Conteudo do no.
-    public No esq, dir;  // Filhos da esq e dir.
-
-    /**
-     * Construtor da classe.
-     * @param elemento Conteudo do no.
-     */
-    public No(Jogador elemento) {
-        this(elemento, null, null);
-    }
-
-    /**
-     * Construtor da classe.
-     * @param elemento Conteudo do no.
-     * @param esq No da esquerda.
-     * @param dir No da direita.
-     */
-    public No(Jogador elemento, No esq, No dir) {
-        this.elemento = elemento;
-        this.esq = esq;
-        this.dir = dir;
-    }
+	public int elemento; 
+	public No esq, dir;
+	public No2 outro;
+	
+	public No(int elemento) { 
+	   this.elemento = elemento;
+	   this.esq = this.dir = null;
+	   this.outro = null;
+	}
+ 
+	public No(int elemento, No esq, No dir,No2 outro) {
+	   this.elemento = elemento;
+	   this.esq = esq;
+	   this.dir = dir;
+	   this.outro = outro;
+	}
+	
 }
-
-class TreeSort {
-	private No raiz; 
-    private int n;
-
-	public TreeSort() {
-		raiz = null;
-        n = 0;
+ 
+class No2 {
+	public String elemento; 
+	public No2 esq; 
+	public No2 dir; 
+ 
+	No2(String elemento) {
+	   this.elemento = elemento;
+	   this.esq = this.dir = null;
 	}
-
-	public Jogador[] sort() {
-        Jogador[] array = new Jogador[n];
-        n = 0;
-        sort(raiz, array);
-        return array;
+ 
+	No2(String elemento, No2 esq, No2 dir) {
+	   this.elemento = elemento;
+	   this.esq = esq;
+	   this.dir = dir;
 	}
-
-	private void sort(No i, Jogador[] array) {
-		if (i != null) {
-			sort(i.esq, array);
-			array[n++] = i.elemento;
-			sort (i.dir, array);
-		}
+}
+ 
+class ArvoreArvore {
+	private No raiz; // Raiz da arvore.
+ 
+	public ArvoreArvore() throws Exception {
+	    raiz = null;
+        // insercao na primeira arvore dos elementos 7, 3, 11, 1, 5, 9, 13, 0, 2, 4, 6, 8, 10, 12 e 14.
+        inserir(7);
+        inserir(3);
+        inserir(11);
+        inserir(1);
+        inserir(5);
+        inserir(9);
+        inserir(12);
+        inserir(0);
+        inserir(2);
+        inserir(4);
+        inserir(6);
+        inserir(8);
+        inserir(10);
+        inserir(13);
+        inserir(14);
 	}
-
-	public void inserir(Jogador x) {
-        questao5.contador++;
-        n++;
-		raiz = inserir(x, raiz);
+	
+    public void inserir(int x) throws Exception {
+	   raiz = inserir(x, raiz);
 	}
-
-	private No inserir(Jogador x, No i) {
-		if (i == null) {
-            questao5.contador++;
-            i = new No(x);
-        } else if (x.getNome().compareTo(i.elemento.getNome()) < 0) {
-            questao5.contador++;
-            i.esq = inserir(x, i.esq);
-        } else if (x.getNome().compareTo(i.elemento.getNome()) > 0) {
-            questao5.contador++;
-            i.dir = inserir(x, i.dir);
-        }
-
-		return i;
-	}
-
-    public boolean pesquisar(String x) {
-		return pesquisar(x, raiz);
-	}
-
-	/**
-	 * Metodo privado recursivo para pesquisar elemento.
-	 * @param x Elemento que sera procurado.
-	 * @param i No em analise.
-	 * @return <code>true</code> se o elemento existir,
-	 * <code>false</code> em caso contrario.
-	 */
-	private boolean pesquisar(String x, No i) {
-        boolean resp;
+ 
+	private No inserir(int x, No i) throws Exception {
         if (i == null) {
-            resp = false;
-        }else if (x.compareTo(i.elemento.getNome()) == 0) {
-            resp = true;
-        }else if ( x.compareTo(i.elemento.getNome()) < 0 ) {
-            resp = pesquisar(x, i.esq);
+            i = new No(x);  
+        } else if (x <i.elemento ){
+            i.esq = inserir(x, i.esq);
+        }else if (x > i.elemento ){
+            i.dir = inserir(x, i.dir);
         }else {
-            resp = pesquisar(x, i.dir);
+            throw new Exception("Erro ao inserir!");
+        }
+        return i;
+	}
+	
+	public boolean pesquisar(String x){
+        if(raiz != null){
+            System.out.print(x + " raiz");
+	    }
+        return pesquisar(x,raiz);
+	} 
+    
+	private boolean pesquisar(String x,No i){
+        boolean resp= false;
+        if(i != null){    
+            resp=pesquisar2(x,i.outro);
+            if(resp == false){ 
+                System.out.print(" esq");
+                resp= pesquisar(x,i.esq);
+            }
+            if(resp == false){ 
+                System.out.print(" dir");
+                resp=pesquisar(x,i.dir);
+            }
+        }
+	    return resp;
+	}
+ 
+	private boolean pesquisar2(String x, No2 i) {
+        boolean resp= false;
+        if(i != null){
+            if (x.compareTo(i.elemento)==0) {
+                resp = true;
+            } else{
+                System.out.print(" ESQ");
+                resp = pesquisar2(x, i.esq);
+            
+                if(resp == false){
+                    System.out.print(" DIR");
+                    resp = pesquisar2(x, i.dir);
+                }
+            }
         }
         return resp;
 	}
+
+	public void InserirArvore2(String entrada , int y) throws Exception {
+	   inserir2(entrada ,y ,raiz);
+	}
+
+	private void inserir2(String entrada , int y, No i) throws Exception {
+        if (i.elemento == y) {
+            i.outro = inserir3(entrada,i.outro);
+        } else if (y < i.elemento ){
+            inserir2(entrada,y,i.esq);
+        } else if (y > i.elemento ){
+            inserir2(entrada,y,i.dir);
+        } else {
+            throw new Exception("Erro ao inserir!");
+        }
+	}
+   
+	private No2 inserir3(String entrada, No2 i)throws Exception{
+        if(i == null ){
+            i = new No2(entrada);
+        }else if(entrada.compareTo(i.elemento)<0){
+            i.esq=inserir3(entrada,i.esq);
+        }else if(entrada.compareTo(i.elemento)>0)
+            i.dir=inserir3(entrada,i.dir);
+        else {
+            throw new Exception("Erro ao inserir!");
+        }
+
+        return i;
+	}
 }
 
-public class questao5{
+public class questao2{
     public static Jogador[] jogad = new Jogador[1000];
     public static int tamJog = 0;
     public static int contador = 0;
@@ -277,7 +333,7 @@ public class questao5{
         //----------------------------------------------//
         
         // PRIMEIRA PARTE DA LEITURA
-        TreeSort tree = new TreeSort();
+        ArvoreArvore arvore = new ArvoreArvore();
         String IdsJogadores = "";
         BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
         IdsJogadores = entrada.readLine();
@@ -289,16 +345,28 @@ public class questao5{
             IdsJogadores = entrada.readLine();
         }
         for(int i =0 ; i < tamJog ; i++){
-            tree.inserir(jogad[i]);
+            int valor = jogad[i].getAltura()%15;
+            arvore.InserirArvore2(jogad[i].getNome(), valor);
         }
-        Jogador[] array = tree.sort();
-        for(int j = 0; j < array.length; j++){
-            System.out.println(array[j].getNome());
+        
+        // SEGUNDA PARTE DA LEITURA
+        String NomeJogadores = "";
+        boolean saida = false;
+        NomeJogadores = entrada.readLine();
+
+        while(NomeJogadores.equals("FIM") != true){
+            saida = arvore.pesquisar(NomeJogadores);
+            if(saida == false){
+                System.out.println(" NAO");
+            }else{
+                System.out.println(" SIM"); 
+            }
+            NomeJogadores = entrada.readLine();
         }
 
         //arquivo de Matricula sequencial 
         long tempoFinal = System.currentTimeMillis();
-        Arq.openWrite("matrícula_treesort.txt");
+        Arq.openWrite("matrícula_arvoreBinaria.txt");
         Arq.println("695161" + "\t" + (tempoFinal - tempoInicial) + "\t" + contador);
         Arq.close();
     } 

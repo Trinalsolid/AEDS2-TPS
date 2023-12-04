@@ -229,6 +229,25 @@ class ArvoreTrie {
         }
         return resp;
     }
+
+    public void merge(ArvoreTrie arvore2) {
+        merge(raiz, arvore2.raiz);
+    }
+
+    private void merge(No no, No no2) {
+        if (no2.folha) {
+            no.folha = true;
+        }
+
+        for (int i = 0; i < no2.prox.length; i++) {
+            if (no2.prox[i] != null) {
+                if (no.prox[i] == null) {
+                    no.prox[i] = new No((char) i);
+                }
+                merge(no.prox[i], no2.prox[i]);
+            }
+        }
+    }
 }
 
 public class questao6{
@@ -291,6 +310,7 @@ public class questao6{
         
         // PRIMEIRA PARTE DA LEITURA
         ArvoreTrie trie1 = new ArvoreTrie();
+        ArvoreTrie trie2 = new ArvoreTrie();
     
         String IdsJogadores = "";
         BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
@@ -302,7 +322,10 @@ public class questao6{
             tamJog ++;
             IdsJogadores = entrada.readLine();
         }
-    
+        for(int i =0 ; i < tamJog ; i++){
+            trie1.inserir(jogad[i].getNome());
+        }
+
         IdsJogadores = entrada.readLine();
         while(IdsJogadores.equals("FIM") != true){
             jogad[tamJog] = new Jogador();
@@ -311,8 +334,10 @@ public class questao6{
             IdsJogadores = entrada.readLine();
         }
         for(int j =0 ; j < tamJog ; j++){
-            trie1.inserir(jogad[j].getNome());
+            trie2.inserir(jogad[j].getNome());
         }
+
+        trie1.merge(trie2);
 
         // SEGUNDA PARTE DA LEITURA
 
